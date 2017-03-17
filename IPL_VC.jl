@@ -14,7 +14,7 @@ function IPL_VC(G; relax = true)
     solve(m, relaxation=relax)
     z = getobjectivevalue(m)
     sol = getvalue(x)
-    return find(sol)
+    return find(x -> x >= 0.5, sol)
 end
 
 # G = random_graph(20, 0.2)

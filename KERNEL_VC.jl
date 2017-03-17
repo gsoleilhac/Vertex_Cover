@@ -2,7 +2,9 @@ function KERNEL_VC(g, k, VC=Set{Int}())
     G = deepcopy(g)
     VC = Set{Int}()
     while true
-        k == 0 && return Set()
+        if k == 0 
+            return VC
+        end
         u = vertex_deg_equals_x(G, 1)
         if u!= 0
             v = voisins(G, u)[1]
@@ -20,5 +22,9 @@ function KERNEL_VC(g, k, VC=Set{Int}())
             end
         end
     end
-    return VC
+    if count_edges(G) > k^2
+        return Set()
+    else
+        return union(VC, GLOUTON_VC(G))
+    end
 end

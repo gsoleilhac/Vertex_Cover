@@ -15,7 +15,7 @@ function simple_VC(G)
     return VC
 end
 
-function ARB_VC(G, k, VC=Set{Int}())
+function ARB_VC(G::Matrix{Int}, k, VC=Set{Int}())
 
     u = vertex_deg_geq_than_x(G,3)
     if u == 0
@@ -36,7 +36,7 @@ function ARB_VC(G, k, VC=Set{Int}())
         for v in nb
             del_neighbour_edges!(G_right, v)
         end
-        ARB_right = ARB_VC(G, k-1, union(VC, nb))
+        ARB_right = ARB_VC(G_right, k-1, union(VC, nb))
 
         if isempty(ARB_left)
             return ARB_right

@@ -59,3 +59,20 @@ function pick_edge_max(G)
     end
     return res
 end
+
+function is_VC(G, VC)
+    for u = 1:size(G,1)
+        if !(u in VC)
+            for v in voisins(G, u)
+                if !(v in VC)
+                    return false
+                end
+            end
+        end
+    end
+    return true
+end
+
+function count_edges(G)
+    return count(x->x==1, G)/2
+end
