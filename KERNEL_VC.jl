@@ -1,14 +1,14 @@
 
 function KERNEL_VC(g, k, VC=Set{Int}())
     k0 = k
-    G = deepcopy(g)
+    G = Graph(copy(g.ind, g.m))
     VC = Set{Int}()
     while true
         # show_graph(G)
         k == 0 && break
         u = vertex_deg_equals_x(G, 1)
         if u!= 0
-            v = voisins(G, u)[1]
+            v dee= voisins(G, u)[1]
             push!(VC, v)
             del_neighbour_edges!(G, v)
             k = k-1

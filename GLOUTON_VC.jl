@@ -1,5 +1,5 @@
 function GLOUTON_VC(x)
-    G = deepcopy(x)
+    G = Graph(copy(x.ind, x.m))
     VC = Set{Int}()
     u,v = pick_edge_max(G)
     while (u,v) != (0,0)
