@@ -1,10 +1,11 @@
+
 function KERNEL_VC(g, k, VC=Set{Int}())
+    k0 = k
     G = deepcopy(g)
     VC = Set{Int}()
     while true
-        if k == 0 
-            return VC
-        end
+        # show_graph(G)
+        k == 0 && break
         u = vertex_deg_equals_x(G, 1)
         if u!= 0
             v = voisins(G, u)[1]
@@ -13,18 +14,25 @@ function KERNEL_VC(g, k, VC=Set{Int}())
             k = k-1
         else
             v = vertex_deg_geq_than_x(G, k+1)
-            if v != 0
-                push!(VC, v)
-                k = k-1
-                del_neighbour_edges!(G, v)
-            else
-                break
-            end
+            v == 0 && break
+            push!(VC, v)
+            del_neighbour_edges!(G, v)
+            k = k-1
         end
     end
-    if count_edges(G) > k^2
-        return Set()
+
+    if k == 0
+        is_VC(G, VC) && return VC
+        return Set{Int}()
     else
-        return union(VC, GLOUTON_VC(G))
+        if count_edges(G) > k0*k
+            println("oops")
+            return Set()
+        else
+            ARB = ARB_VC(G,k)
+            VC = union(VC, ARB)
+            is_VC(G, VC) && return VC
+            return Set{Int}()
+        end
     end
 end
