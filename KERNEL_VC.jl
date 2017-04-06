@@ -1,14 +1,14 @@
 
-function KERNEL_VC(g, k, VC=Set{Int}())
+function KERNEL_VC(g::Graph, k::Integer, VC=Set{T}())
     k0 = k
-    G = Graph(copy(g.ind, g.m))
-    VC = Set{Int}()
+    G = Graph(copy(g.ind), g.m)
+    VC = Set{T}()
     while true
         # show_graph(G)
         k == 0 && break
         u = vertex_deg_equals_x(G, 1)
         if u!= 0
-            v dee= voisins(G, u)[1]
+            v= first(voisins(G, u))
             push!(VC, v)
             del_neighbour_edges!(G, v)
             k = k-1
@@ -23,16 +23,16 @@ function KERNEL_VC(g, k, VC=Set{Int}())
 
     if k == 0
         is_VC(G, VC) && return VC
-        return Set{Int}()
+        return Set{T}()
     else
         if count_edges(G) > k0*k
             println("oops")
-            return Set()
+            return Set{T}()
         else
             ARB = ARB_VC(G,k)
             VC = union(VC, ARB)
             is_VC(G, VC) && return VC
-            return Set{Int}()
+            return Set{T}()
         end
     end
 end

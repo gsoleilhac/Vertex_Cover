@@ -1,8 +1,9 @@
-function simple_VC(G)::Set{Int}
-    VC = Set{Int}()
+function simple_VC(g::Graph)::Set{T}
+    G = Graph(copy(g.ind), g.m)
+    VC = Set{T}()
     x = vertex_deg_equals_x(G,1)
     while x != 0
-        nb = voisins(G,x)[1]
+        nb = first(voisins(G,x))
         push!(VC, nb)
         del_neighbour_edges!(G, nb)
         x = vertex_deg_equals_x(G, 1)
@@ -15,7 +16,7 @@ function simple_VC(G)::Set{Int}
     end
     x = vertex_deg_geq_than_x(G,1)
     while x != 0
-        nb = voisins(G,x)[1]
+        nb = first(voisins(G,x))
         push!(VC, nb)
         del_neighbour_edges!(G, nb)
         x = vertex_deg_geq_than_x(G, 1)
@@ -23,18 +24,18 @@ function simple_VC(G)::Set{Int}
     return VC
 end
 
-function ARB_VC(G, k, VC::Set{Int}=Set{Int}())::Set{Int}
+function ARB_VC(G::Graph, k::Integer, VC::Set{T}=Set{T}())::Set{T}
     u = vertex_deg_geq_than_x(G,3)
     if u == 0
-        SVC = simple_VC(Graph(copy(G.ind), G.m))
+        SVC = simple_VC(G)
         if length(SVC) <= k
             return union(SVC, VC)
         else
-            return Set{Int}()
+            return Set{T}()
         end
     elseif k <= 0
         is_VC(G, VC) && return VC
-        return Set{Int}()
+        return Set{T}()
     else
         G_left = Graph(copy(G.ind), G.m)
         del_neighbour_edges!(G_left, u)
@@ -50,7 +51,7 @@ function ARB_VC(G, k, VC::Set{Int}=Set{Int}())::Set{Int}
             end
             return ARB_VC(G_right, k-length(nb), union(VC, Set(nb)))
         else 
-            return Set{Int}()
+            return Set{T}()
         end
     end
 end

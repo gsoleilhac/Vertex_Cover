@@ -39,7 +39,8 @@ function benchmark()
             al,bl,cl = length(a), length(b), length(c)
 
             if A&&B&&C&&D&&E
-                println("p = $pp ; $m ; $Δ ; $dmoy ; $at ; $al ; $bt ; $bl ; $ct ; $dt ; $et ; $cl")
+                s = 3 # nombre de chiffres significatifs
+                println("p = $pp ; $m ; $Δ ; $(signif(dmoy,s)) ; $(signif(at,s)) ; $al ; $(signif(bt,s)) ; $bl ; $(signif(ct,s)) ; $(signif(dt,s)) ; $(signif(et,s)) ; $cl")
             else
                 println("p = $pp ; $m ; $Δ ; $dmoy")
                 A && println("Glouton :  |$(length(a))| $at")
