@@ -1,5 +1,5 @@
 function GLOUTON_VC(g::Graph)
-    G = Graph(copy(g.ind), g.m)
+    G = copy(g)
     VC = Set{T}()
     u,v = pick_edge_max(G)
     while (u,v) != (T(0),T(0))

@@ -2,7 +2,7 @@ using JuMP
 using CPLEX
 
 
-function IPL_VC(G; relax = true)
+function IPL_VC(G::Graph; relax = true)
 
     m = Model(solver = CplexSolver())
     n = size(G.m,1)

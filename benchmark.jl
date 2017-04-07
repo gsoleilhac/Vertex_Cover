@@ -16,7 +16,8 @@ function benchmark()
     A,B,C,D,E = true,true,true,true,true
 
     for n = [10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500]
-        println("n = $n")
+        println(" ; ; ; ; Greedy ; ; IPL ; ; IP ; KERNEL ; ARB ")
+        println("n = $n ; m ; delta ; dmoy ; Temps ; Val ; Temps ; Val ; Temps ; Temps; Temps; Val* ")
         for (p,pp) in [(4/n,"4/n"), (5/n,"5/n"), (log(n)/n, "log(n)/n"), (1/sqrt(n),"1/√n"), (0.1,"0.1"), (0.2,"0.2")]
             
             G = random_graph(n,p)
@@ -51,7 +52,7 @@ function benchmark()
             end
 
         end
-        println("\n* * * * * * * * * * * * * * * * * * * * * * * * *")
+        println("")
     end
 end
 
