@@ -5,21 +5,22 @@ include("ARB_VC.jl")
 include("KERNEL_VC.jl")
 
 
-precompile(GLOUTON_VC, (Graph,))
-precompile(IPL_VC, (Graph,))
-precompile(KERNEL_VC, (Graph,Int64))
-precompile(ARB_VC, (Graph,Int64))
-
 function benchmark()
 
     __precompile()
-    A,B,C,D,E = true,true,true,true,true
+    terminates = trues(5,6)
+    # terminates[2,:] .= true
 
-    for n = [10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500]
+    n = 10
+    while any(terminates)
         println(" ; ; ; ; Greedy ; ; IPL ; ; IP ; KERNEL ; ARB ")
         println("n = $n ; m ; delta ; dmoy ; Temps ; Val ; Temps ; Val ; Temps ; Temps; Temps; Val* ")
-        for (p,pp) in [(4/n,"4/n"), (5/n,"5/n"), (log(n)/n, "log(n)/n"), (1/sqrt(n),"1/√n"), (0.1,"0.1"), (0.2,"0.2")]
+        ptab = [4/n,5/n,log(n)/n,1/sqrt(n),0.1,0.2]
+        pname = ["4/n", "5/n", "log(n)/n", "1/√n", "0.1", "0.2"]
+        for pi = 1:6
             
+            p = ptab[pi]
+
             G = random_graph(n,p)
             m = sum(G.m) ÷ 2
             Δ = maximum(deg(G,i) for i = 1:n)
@@ -28,30 +29,60 @@ function benchmark()
             TT = STDOUT 
             redirect_stdout() # CPLEX est très bavard...
 
-            a,at = @timed GLOUTON_VC(G)
-            b,bt = @timed IPL_VC(G)
-            c,ct = @timed IPL_VC(G, relax=false)
-            d,dt = @timed KERNEL_VC(G, length(c))
-            e,et = @timed ARB_VC(G, length(c))
+            if terminates[1, pi]
+                a,at = @timed GLOUTON_VC(G)
+                at > 180 && (terminates[1,pi] = false)
+            else
+                a,at = [],0
+            end
+            if terminates[2, pi]
+                b,bt = @timed IPL_VC(G)
+                bt > 180 && (terminates[2,pi] = false)
+            else
+                b,bt = [],0
+            end
+            if terminates[3, pi]
+                c,ct = @timed IPL_VC(G, relax=false)
+                ct > 180 && (terminates[3,pi] = false)
+            else
+                c,ct = [],0
+            end
+            if terminates[4, pi]
+                d,dt = @timed KERNEL_VC(G, length(c))
+                dt > 180 && (terminates[4,pi] = false)
+            else
+                d,dt = [],0
+            end
+            if terminates[5, pi]
+                e,et = @timed ARB_VC(G, length(c))
+                et > 180 && (terminates[5,pi] = false)
+            else
+                e,et = [],0
+            end
 
-
+            sleep(0.1)
             redirect_stdout(TT)
 
             al,bl,cl = length(a), length(b), length(c)
 
-            if A&&B&&C&&D&&E
-                s = 3 # nombre de chiffres significatifs
-                println("p = $pp ; $m ; $Δ ; $(signif(dmoy,s)) ; $(signif(at,s)) ; $al ; $(signif(bt,s)) ; $bl ; $(signif(ct,s)) ; $(signif(dt,s)) ; $(signif(et,s)) ; $cl")
-            else
-                println("p = $pp ; $m ; $Δ ; $dmoy")
-                A && println("Glouton :  |$(length(a))| $at")
-                B && println("IPL :      |$(length(b))| $bt")
-                C && println("IP :       |$(length(c))| $ct")
-                D && println("KERNEL :   |$(length(d))| $dt")
-                E && println("ARB :      |$(length(e))| $et")
-            end
+            
+            s = 3 # nombre de chiffres significatifs
+            println("p = $(pname[pi]) ; $m ; $Δ ; $(signif(dmoy,s)) ; $(signif(at,s)) ; $al ; $(signif(bt,s)) ; $bl ; $(signif(ct,s)) ; $(signif(dt,s)) ; $(signif(et,s)) ; $cl")
 
         end
+        if n < 100
+            n += 10
+        elseif n < 500
+            n += 20
+        elseif n < 1000
+            n += 50
+        elseif n < 2000
+            n += 100
+        else
+            n += 500
+        end
+
+
         println("")
     end
 end
@@ -68,7 +99,7 @@ function __precompile()
     e,et = @timed ARB_VC(G, length(c))
 
     redirect_stdout(TT)
-
+    return b,bt
 end
 
 benchmark()

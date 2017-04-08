@@ -1,4 +1,4 @@
-typealias T UInt16  #typemax(UInt16) = 65535
+typealias T Int16  #typemax(UInt16) = 65535
 
 immutable Graph
     ind::Vector{T} #Contient les indices des sommets encore présents dans le graphe
@@ -177,7 +177,8 @@ function signif(x::Real, n::Integer)::String
         if n > log(10,x)
             return "$(round(x,n - ceil(Int,log(10,x))))"
         else
-            return "$(round(x / 10^floor(Int,log(10,x)), n-1))e$(floor(Int,log(10,x)))"
+            # return "$(round(x / 10^floor(Int,log(10,x)), n-1))e$(floor(Int,log(10,x)))"
+            return "$(round(Int,x))"
         end
     else
         if x >= 1e-4
